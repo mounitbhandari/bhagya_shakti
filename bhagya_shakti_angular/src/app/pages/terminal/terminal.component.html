@@ -1,0 +1,257 @@
+
+<div [ngClass]="projectData.colorScheme" id="outer-div" style="height: 480px;">
+
+  <div class="d-flex flex-row bd-highlight mb-3  " id="bg">
+    <div class="p-2 background body  bd-highlight" id="background" >
+      <div fxLayout="row" fxLayoutAlign="" >
+        <div id="table-1" fxFlex="35" class=" ml-2 mt-2" >
+            <table class="table" id="triple-table" style="border: 5px solid lightgoldenrodyellow;">
+              <thead class="mt-5 triple-table-thead">
+              <tr>
+                <th class="pink" *ngFor="let single of singleNumbers; let i = index">
+
+                  <button mat-fab matBadge="*" [matBadgeHidden]="activeTripleContainerValue!=i"  class="triple-selection-button-{{i}} tripple-selection-button" (click)="setActiveTripleContainerValue(i)">
+                    <span>{{single.singleNumber}}</span>
+                  </button>
+                </th>
+              </tr>
+
+              <tr *ngIf="singleNumbers.length && activeTripleContainerValue > -1">
+                <th colspan="10" class="text-center">
+                  <button mat-fab  class="tripple-selection-button coder-fab">
+                    <span>{{singleNumbers[activeTripleContainerValue].singleNumber}}</span>
+                  </button>
+              </tr>
+              </thead>
+              <tbody  id="triple-body-{{idxSingle}}" class="table-div-{{idxSingle}}" *ngFor="let tableData of numberCombinationMatrix; let idxSingle = index">
+              <ng-container *ngIf="isActiveTripleContainter(idxSingle)">
+                <tr *ngFor="let row of tableData.numberCombinations.slice(0, tableData.numberCombinations.length % columnNumber  === 0 ? tableData.numberCombinations.length / columnNumber : tableData.numberCombinations.length / columnNumber + 1); let idx = index">
+                  <td colspan="2" *ngFor="let x of tableData.numberCombinations.slice(idx * columnNumber, idx * columnNumber + columnNumber)" class="text-center align-middle">
+
+                    <button mat-raised-button matBadge="{{x.quantity}}" class="triple-number-button" [matBadgeHidden]="false" value="bold" (click)="setGameInputSet(x,idxSingle,2)" name="fontStyle" aria-label="Font Style" style="font-size: larger;">
+                      {{ x.visibleTripleNumber }}
+                    </button>
+                  </td>
+                </tr>
+              </ng-container>
+              </tbody>
+            </table>
+
+            <div class="col-4" style="padding-top: 10px;" >
+              <div class="left-div" style="padding-top: 30px;">
+               <span style="padding-left: 50px;">play : {{totalTicketPurchased}}</span>
+              </div>
+            </div>
+        </div>
+
+        <div fxFlex="30">
+          <div style="text-align: center;">
+
+            <div style="padding-top: 17px; ">
+
+              <ngx-wheel
+                #wheel
+                width='230'
+                height='230'
+                spinDuration='8'
+                [items]='items'
+                [innerRadius]='20'
+                [spinAmount]='10'
+                [textOrientation]='textOrientation'
+                [textAlignment]='textAlignment'
+                pointerStrokeColor='black'
+                pointerFillColor='gold'
+                [idToLandOn]='idToLandOn'
+                (onSpinStart)='before()'
+                (onSpinComplete)='after()'
+                style="padding-left: 40px;"
+              ></ngx-wheel>
+
+
+
+
+
+
+
+              <div style="padding-top: 30px;">
+                <span class="text-white text-center"><h1>SINGLES</h1> </span>
+                <div class="d-flex justify-content-between" style="background-color: rgb(255, 230, 0);height: 50px; border: 5px solid rgb(247, 38, 84); border-style: double; width: 105%;">
+
+                    <button matBadge="{{single.quantity}}" *ngFor="let single of singleNumbers; let i=index" class="single-number-button-{{i}}"   (click)="setGameInputSet(single,1,1)">{{ single.singleNumber }}</button>
+
+                </div>
+
+
+                  <div class="d-flex justify-content-between" style="background-image: url('assets/images/TripleFun/CancelBet.png'); background-repeat: no-repeat;background-size: cover; padding-bottom: 20px;  width: 435px;
+                  margin-left: -38px;">
+
+                    <div class="chips-outer-div " style="padding-top: 8%; padding-left: 15%;">
+
+                      <input *ngFor="let x of chips; let i= index" class="chips-button-{{i}}" [ngClass]="(selectedChip==x)?'selectedChipStyle':''" mat-fab value="bold" type="button" value="" (click)="changeChip(x)">
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+
+
+          </div>
+        </div>
+
+        <div fxFlex="35" class=" ml-2 mt-2" style=" color: white; font-weight: bold; ">
+
+          <div class="container right-container" >
+            <table class="" >
+              <thead >
+                <tr >
+                  <th colspan="4">
+                    <div>{{currentDate}}&nbsp;
+                    </div>
+                    <!-- <div>GAME1 RESULT SHEET</div> -->
+                  </th>
+                  <th colspan="4" style="padding-left: 100px;">
+                    <div style="text-align: end; color: white;">RESULT SHEET</div>
+                  </th>
+                </tr>
+              </thead>
+            </table>
+
+            <table class="table " id="result-table" >
+
+
+
+
+
+              <tbody>
+
+
+                  <ng-container *ngIf="currentDateResult">
+                    <tr *ngFor="let row of currentDateResult.result.slice(0, currentDateResult.result.length % columnNumber2  === 0 ? currentDateResult.result.length / columnNumber2 : currentDateResult.result.length / columnNumber2 + 1); let idx = index">
+                      <td scope="row" class="current-result" colspan="2" *ngFor="let result of currentDateResult.result.slice(idx * columnNumber2, idx * columnNumber2 + columnNumber2)" class="text-center align-middle">
+
+                        <div class=" result-heading current-result">{{result.end_time.slice(0,5)}}</div>
+                        <div class="bd-highlight current-result">{{result.visible_triple_number || '***'}}</div>
+                        <div class="bd-highlight current-result">{{(result.single_number!=null && result.single_number>=0) ?  result.single_number : '*'}}</div>
+
+                      </td>
+                    </tr>
+                  </ng-container>
+
+
+
+
+              </tbody>
+            </table>
+
+
+
+            <div class=" d-flex" style="height: 40px; border-radius: 10px;">
+              <button style="font-size: 95%; width: 20%;" class="btn btn-lg  btn-responsive btn-primary">INFO</button>
+              <button (click)="resetMatrixValue()" style="font-size: 95%; " class="btn btn-success ml-1 btn-responsive">CLEAR</button>
+              <button style="font-size: 95%; " class="btn btn-danger ml-1 btn-responsive">REPEAT</button>
+              <button style="font-size: 95%; " class="btn btn-info ml-1 btn-responsive">DOUBLE</button>
+              <button (click)="saveUserPlayInputDetails()" style="font-size: 95%; width: 20%;" class="btn btn-warning ml-1 btn-responsive">BUY</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="d-flex">
+
+        <div class="col-4">
+
+
+
+
+
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+
+
+</div>
+
+
+
+<div id="print-section" directPrint="true" style="border: 2px solid black; margin-left: 0; display: none" *ngIf="lastPurchasedTicketDetails">
+  Kfatafat
+  <div>
+    <div >Terminal: {{lastPurchasedTicketDetails.data.play_master.terminal.terminalId}}</div>
+    <div >Ticket ID: {{lastPurchasedTicketDetails.data.play_master.barcodeNumber}}</div>
+    <div >Draw time: {{lastPurchasedTicketDetails.data.play_master.drawTime.visibleTime}}</div>
+    <div >Ticket time: {{lastPurchasedTicketDetails.data.play_master.ticketTakenTime}}</div>
+    <div >Total point: {{lastPurchasedTicketDetails.data.amount}}</div>
+  </div>
+  <div>
+    <div style="font-weight: bold;" *ngIf="lastPurchasedTicketSingle.length">Single</div>
+      <table>
+        <tbody>
+          <tr *ngFor="let single of lastPurchasedTicketSingle.
+          slice(0, lastPurchasedTicketSingle.length % 5  === 0 ?
+           lastPurchasedTicketSingle.length / 5 :
+            lastPurchasedTicketSingle.length / 5 + 1); let idx = index">
+            <td *ngFor="let x of lastPurchasedTicketSingle.slice(idx * 5, idx * 5 + 5)" style="white-space: nowrap">
+              {{x.singleNumber}}-{{x.quantity}},
+            </td>
+
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  <div>
+    <div style="font-weight: bold;" *ngIf="lastPurchasedTicketTriple.length">Triple</div>
+    <table>
+      <tbody>
+        <tr *ngFor="let triple of lastPurchasedTicketTriple.
+        slice(0, lastPurchasedTicketTriple.length % 5  === 0 ?
+         lastPurchasedTicketTriple.length / 5 :
+          lastPurchasedTicketTriple.length / 5 + 1); let idx = index">
+          <td *ngFor="let x of lastPurchasedTicketTriple.slice(idx * 5, idx * 5 + 5)" style="white-space: nowrap">
+            {{x.visibleTripleNumber}} - {{x.quantity}},
+          </td>
+
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!--<button (click)="printDiv()">Print div</button>-->
+<!--end testing print-->
+
+
+
+<!-- <button id="print-button" [printStyle]="{h1 : {'color': 'red'}, h2 : {'border': 'solid 3px'}}" printSectionId="print-section" ngxPrint>print</button> -->
+
+<div class="d-flex" *ngIf="!isProduction">
+  <div class="col-3">
+    <mat-slide-toggle (change)="showDevArea=!showDevArea">{{showDevArea?"Hide Developer Area":"Show Developer Area"}}</mat-slide-toggle>
+  </div>
+</div>
+
+<div class="d-flex" *ngIf="!isProduction && showDevArea">
+  <div class="col-6">
+    <button id="print-button" [printStyle]="{h1 : {'color': 'red'}, h2 : {'border': 'solid 3px'}}" printSectionId="print-section" ngxPrint>print</button>
+      <pre>
+        singleNumbers = {{singleNumbers | json}}
+      </pre>
+  </div>
+  <div class="col-3">
+      <pre>
+        activeDrawTime = {{activeDrawTime | json}}
+      </pre>
+  </div>
+  <div class="col-3"><pre>userGameInput = {{userGameInput | json}}</pre>
+  </div>
+</div>
+
+
+
+
